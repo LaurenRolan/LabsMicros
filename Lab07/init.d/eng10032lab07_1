@@ -1,0 +1,39 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          eng10032lab07_1
+# Required-Start:    
+# Should-Start:      
+# Required-Stop:     
+# Default-Start:     S
+# Default-Stop:
+# Short-Description: Configures GPIO and ADC for Lab 07.
+# Description:       Configures GPIO and ADC for Lab 07.
+### END INIT INFO
+
+case "$1" in
+    start|restart|force-reload)
+	# gpio49 = in = neither pull-up nor pull-down
+	if [ ! -d /sys/class/gpio/gpio49 ] ; then
+	    echo -n "49" > /sys/class/gpio/export
+	fi
+	echo -n "in" > /sys/class/gpio/gpio49/direction
+        
+        chgrp adc /sys/bus/iio/devices/iio:device0/in_voltage0_raw
+        chmod g+r /sys/bus/iio/devices/iio:device0/in_voltage0_raw
+        chgrp adc /sys/bus/iio/devices/iio:device0/in_voltage0_scale
+        chmod g+r /sys/bus/iio/devices/iio:device0/in_voltage0_scale
+    	;;
+    stop)
+	
+	echo -n "49" > /sys/class/gpio/unexport
+	;;
+    status)
+	;;
+    *)
+	echo -n "Usage: $0 " 
+	echo "{start|stop|restart|force-reload|status}"
+	exit 1
+	;;
+esac
+
+exit 0
