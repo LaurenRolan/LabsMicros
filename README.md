@@ -6,25 +6,25 @@ Laboratórios de Microcontroladores - 2018/1
 ##Comandos básicos
 * Adição de usuário
 
-  `useradd -c "Nome por Extenso" -s /bin/bash -m <login>
+  `useradd -c "Nome por Extenso" -s /bin/bash -m <login>`
   
-  userdel -r <login> #caso login tenha sido criado errado
+  `userdel -r <login> #caso login tenha sido criado errado`
   
-  passwd <login>
+  `passwd <login>`
   
-  exit
+  `exit`
   
-  ssh <login>@<galileoname>
+  `ssh <login>@<galileoname>`
   
-  echo "export PATH=.:$PATH" >> .profile
+  `echo "export PATH=.:$PATH" >> .profile`
   
-  exit`
+  `exit`
   
 * Transferência de arquivos
 
-  `scp <arquivo_no_host> <login>@<galileoname>:
+  `scp <arquivo_no_host> <login>@<galileoname>:`
   
-  scp <login>@<galileoname>:<arquivo_na_galileo> <path_no_host>`
+  `scp <login>@<galileoname>:<arquivo_na_galileo> <path_no_host>`
   
 * Depuração remota
   
