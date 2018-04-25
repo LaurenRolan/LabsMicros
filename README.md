@@ -1,4 +1,4 @@
-# LabsMicros - Laboratórios de Microcontroladores - 2018/1
+# Laboratórios de Microcontroladores - 2018/1
 
 ## Comandos básicos
 * Adição de usuário
