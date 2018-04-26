@@ -30,13 +30,16 @@ int main(int argc,char *argv[])
 	char state='0';
 	int fd;
 	
+	//Escreve no arquivo Linux do IO3
 	fd=open("/sys/class/gpio/gpio62/value",O_WRONLY);
 
 	for(;;)
 	{	
+		//Posiciona-se na primeira linha do arquivo
 		lseek(fd,0,SEEK_SET);
 		write(fd,&state,sizeof state);
 		sleep(1);
+		//Alterna entre 0 e 1 (chars, não ints)
 		state^='0'^'1';
 
 	}
