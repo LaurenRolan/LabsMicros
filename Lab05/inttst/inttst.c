@@ -34,6 +34,7 @@ int main(int argc,char * argv[])
         unsigned char c;
         struct pollfd pfd;
 
+        //Verifica IO4
         if((pfd.fd=open("/sys/class/gpio/gpio6/value",O_RDONLY)) < 0)
         {
                 perror("Opening gpio6:");
