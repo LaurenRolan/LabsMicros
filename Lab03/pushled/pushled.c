@@ -31,14 +31,19 @@ int main(int argc,char *argv[])
 	int button_fd;
 	char s;
 	
+	//Escreve no IO3 (Linux = 62)
 	led_fd=open("/sys/class/gpio/gpio62/value",O_WRONLY);
+	
+	//Lê no IO2 (Linux = 13)
 	button_fd=open("/sys/class/gpio/gpio13/value",O_RDONLY);
 
 	for(;;)
 	{
+		//Vai para a primeira linha do button e lê o char
 		lseek(button_fd,0,SEEK_SET);
 		read(button_fd,&s,sizeof s);
 	
+		//Escreve ochar na primeira linha do LED
 		lseek(led_fd,0,SEEK_SET);
 		write(led_fd,&s,sizeof s);
 
