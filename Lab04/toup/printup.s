@@ -33,19 +33,20 @@ printup:
 	push	edi
 	push	esi
 
-	mov	edi,[ebp+8]
-	mov	esi,edi
-	xor	ecx,ecx
+	mov	edi,[ebp+8]	#Endereço da string
+	mov	esi,edi		#Move o endereço para ESI
+	xor	ecx,ecx		#Zera ECX
 
-	mov	ah,'A
-	xor	ah,'a
-	not	ah
-	cld
-L1:	lods	al,byte ptr[esi]
-	and	al,ah
-	jz	strend
-	stos	byte ptr[edi],al
-	inc	ecx
+	mov	ah,'A		
+	xor	ah,'a		#"Descobre" qual o bit deve ser ligado
+	not	ah		#Cria a máscara
+	cld			#Clears the DF flag in the EFLAGS register. 
+				#When the DF flag is set to 0, string operations increment the index registers (ESI and/or EDI).
+L1:	lods	al,byte ptr[esi]	#Load byte at address DS:(E)SI into AL.
+	and	al,ah		#Aplica a máscara no char
+	jz	strend		#Se já for maiúscula, sai do loop
+	stos	byte ptr[edi],al	#stosb stores a byte from the AL register into the destination operand
+	inc	ecx		#Conta o número de chars modificados
 	jmp	L1
 
 strend:
@@ -53,8 +54,8 @@ strend:
 	push	ecx		# message length
 	push	[ebp+8]		# pointer to message to write
 
-	call	print
-	add	sp,8
+	call	print		#Chama a função na lib, print
+	add	sp,8		#Avança na pilha
 
 	pop	esi
 	pop	edi
