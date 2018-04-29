@@ -1,0 +1,35 @@
+TARGETC=exemplo1
+TARGETCPP=exemplo2
+C_SRCS=$(TARGETC).c 
+CPP_SRCS=$(TARGETCPP).c
+
+OBJS = $(C_SRCS:.c=.o) $(CPP_SRCS:.cpp=.o)
+
+FLAGS= -O2 -Wall -g -MMD
+INCLUDE=-I.
+LIBDIR=
+LIBS=
+
+CPP=i586-poky-linux-gpp
+CC=i586-poky-linux-gcc
+CFLAGS=$(FLAGS) $(INCLUDE)
+LDFLAGS=$(LIBDIR) $(LIBS)
+
+all: prog
+
+prog: $(OBJS)
+  $(CXX) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
+
+%.o : %.cpp
+  $(CXX) -c $(CFLAGS) $<
+
+%.o : %.c
+  $(CC) -c $(CFLAGS) $<
+    
+-include $(C_SRCS:.c=.d) $(CPP_SRCS:.cpp=.d)
+
+clean:
+	rm -f *~ *.bak *.o *.d
+
+distclean: clean
+	rm -f $(TARGETC) $(TARGETCPP)
