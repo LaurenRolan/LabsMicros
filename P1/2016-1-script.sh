@@ -22,11 +22,11 @@ case "$1" in
 	chgrp gpio /sys/class/gpio/gpio0/edge
 	chmod g+r /sys/class/gpio/gpio0/edge
 
-	# Level Shifter GPIO = gpio18 = I => IO5=in de alta impedância
+	# Level Shifter GPIO = gpio18 = high (input)
 	if [ ! -d /sys/class/gpio/gpio18 ] ; then
 	    echo -n "18" > /sys/class/gpio/export
 	fi
-	echo -n "I" > /sys/class/gpio/gpio18/direction
+	echo -n "high" > /sys/class/gpio/gpio18/direction
 
 	# 22k Pull-Up GPIO = gpio19 = I => alta impedância
 	if [ ! -d /sys/class/gpio/gpio19 ] ; then
@@ -44,9 +44,9 @@ case "$1" in
     stop)
     	echo -n "out" > /sys/class/gpio/gpio0/direction
     	echo -n "0" > /sys/class/gpio/unexport
-	    echo -n "18" > /sys/class/gpio/unexport
-	    echo -n "19" > /sys/class/gpio/unexport      
-	    echo -n "66" > /sys/class/gpio/unexport
+	echo -n "18" > /sys/class/gpio/unexport
+	echo -n "19" > /sys/class/gpio/unexport      
+	echo -n "66" > /sys/class/gpio/unexport
 	;;
     status)
     	ls -d /sys/class/gpio/gpio*
