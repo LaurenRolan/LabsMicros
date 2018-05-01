@@ -7,22 +7,16 @@
 //O que está abaixo pode não fazer o menor sentido, mas foi de coração.
 int main(int argc,char * argv[])
 {
-        int duty_cycle = 0;
+        int duty_cycle = 500000;
         int perido = 1000000;
-        int vary = 0;
+        int fd;
         char str[100];
         
-        snprintf(str,sizeof str,"%d\n",periodo);                
+        snprintf(str,sizeof str,"%d\n",periodo);                        
         pputs("/sys/class/pwm/pwmchip0/device/pwm_period",str); //Período de 1ms
+       
+        snprintf(str,sizeof str,"%d\n",duty_cycle);
         
-        while(1)
-        {                 
-          snprintf(str,sizeof str,"%d\n",duty_cycle);
-        
-          pputs("/sys/class/pwm/pwmchip0/pwm1/duty_cycle",str);
-          pputs("/sys/class/pwm/pwmchip0/pwm1/enable","1");
-          duty_cycle += 10000;
-          if(duty_cycle == 1000000)
-            duty_cycle = 0;
-        }        
+        pputs("/sys/class/pwm/pwmchip0/pwm1/duty_cycle",str);
+        pputs("/sys/class/pwm/pwmchip0/pwm1/enable","1");   
 }
