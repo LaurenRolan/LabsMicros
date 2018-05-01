@@ -20,17 +20,22 @@ find_end:
   	jne 	find_end;
   
 print: #Serve, basicamente, para printar a msg de tamanho len
-    	mov     edx, ecx
-    	mov     ecx, [edi]
-    	mov     ebx, 1
-    	mov     eax, 4
+    	mov     edx, ecx #Manda tamanho para edx
+    	mov     ecx, [edi] #Manda endereço da mensagem para ecx
+    	mov     ebx, 1	#Invoca stdout
+    	mov     eax, 4 #Invoca print
     	int     0x80
     
     #Desnecessauro, a menos que seja main
     	#mov     ebx, eax  #Move código de erro ou sucesso para ebx (que é retornado_
     	#mov     eax, 1
     	#int     0x80
-    
+	
+	cmp 	eax, edx #Vê se tem o tamanho certo
+	jne 	erro
+	mov 	eax, 0
+	
+erro:
     	pop	    esi
 	pop	    edi
 	pop	    ebx
