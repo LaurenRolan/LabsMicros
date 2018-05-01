@@ -26,9 +26,10 @@ print: #Serve, basicamente, para printar a msg de tamanho len
     	mov     eax, 4
     	int     0x80
     
-    	mov     ebx, eax  #Move código de erro ou sucesso para ebx (que é retornado_
-    	mov     eax, 1
-    	int     0x80
+    #Desnecessauro, a menos que seja main
+    	#mov     ebx, eax  #Move código de erro ou sucesso para ebx (que é retornado_
+    	#mov     eax, 1
+    	#int     0x80
     
     	pop	    esi
 	pop	    edi
