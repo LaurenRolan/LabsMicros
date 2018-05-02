@@ -1,7 +1,7 @@
 TARGETC=exemplo1
 TARGETCPP=exemplo2
 C_SRCS=$(TARGETC).c 
-CPP_SRCS=$(TARGETCPP).c
+CPP_SRCS=$(TARGETCPP).cpp
 
 OBJS = $(C_SRCS:.c=.o) $(CPP_SRCS:.cpp=.o)
 
@@ -10,7 +10,7 @@ INCLUDE=-I.
 LIBDIR=
 LIBS=
 
-CPP=i586-poky-linux-gpp
+CPP=i586-poky-linux-g++
 CC=i586-poky-linux-gcc
 CFLAGS=$(FLAGS) $(INCLUDE)
 LDFLAGS=$(LIBDIR) $(LIBS)
@@ -18,10 +18,10 @@ LDFLAGS=$(LIBDIR) $(LIBS)
 all: prog
 
 prog: $(OBJS)
-  $(CXX) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
+  $(CPP) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
 
 %.o : %.cpp
-  $(CXX) -c $(CFLAGS) $<
+  $(CPP) -c $(CFLAGS) $<
 
 %.o : %.c
   $(CC) -c $(CFLAGS) $<
