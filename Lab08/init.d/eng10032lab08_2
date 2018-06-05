@@ -1,0 +1,135 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          eng10032lab08_2
+# Required-Start:    
+# Should-Start:      
+# Required-Stop:     
+# Default-Start:     S
+# Default-Stop:
+# Short-Description: Configures the Galileo for a SPI bus in sofware for Lab 08.
+# Description:       Configures the Galileo for a SPI bus in software using IO5 as MOSI, IO4 as SCLK and IO9 as #SS for Lab 08.
+### END INIT INFO
+
+case "$1" in
+    start|restart|force-reload)
+	# Use IO4 as SCLK, mode 0
+	#	gpio6 = SCLK (input)
+	#	gpio36=1 (IO4 is input)
+	#	gpio37=0 (pull-down)
+	if [ ! -d /sys/class/gpio/gpio37 ] ; then
+	    echo -n "37" > /sys/class/gpio/export
+	fi
+	echo -n "out" > /sys/class/gpio/gpio37/direction
+	echo -n "0" > /sys/class/gpio/gpio37/value
+	
+	if [ ! -d /sys/class/gpio/gpio36 ] ; then
+	    echo -n "36" > /sys/class/gpio/export
+	fi
+	echo -n "out" > /sys/class/gpio/gpio36/direction
+	echo -n "1" > /sys/class/gpio/gpio36/value
+	
+	if [ ! -d /sys/class/gpio/gpio6 ] ; then
+	    echo -n "6" > /sys/class/gpio/export
+	fi
+	echo -n "in" > /sys/class/gpio/gpio6/direction
+	
+	chgrp spi /sys/class/gpio/gpio6/value
+        chmod g+r /sys/class/gpio/gpio6/value
+        
+	# Use IO5 as MOSI
+	#	gpio0 = MOSI (input)
+	#	gpio18=1 (IO5 is input)
+	#	gpio19=1 (pull-up)
+	#	gpio66=0 (IO5 is GPIO)
+	if [ ! -d /sys/class/gpio/gpio66 ] ; then
+	    echo -n "66" > /sys/class/gpio/export
+	fi
+	echo -n "0" > /sys/class/gpio/gpio66/value
+
+	if [ ! -d /sys/class/gpio/gpio19 ] ; then
+	    echo -n "19" > /sys/class/gpio/export
+	fi
+	echo -n "out" > /sys/class/gpio/gpio19/direction
+	echo -n "1" > /sys/class/gpio/gpio19/value
+	
+	if [ ! -d /sys/class/gpio/gpio18 ] ; then
+	    echo -n "18" > /sys/class/gpio/export
+	fi
+	echo -n "out" > /sys/class/gpio/gpio18/direction
+	echo -n "1" > /sys/class/gpio/gpio18/value
+	
+	if [ ! -d /sys/class/gpio/gpio0 ] ; then
+	    echo -n "0" > /sys/class/gpio/export
+	fi
+	echo -n "in" > /sys/class/gpio/gpio0/direction
+
+	chgrp spi /sys/class/gpio/gpio0/value
+	chmod g+r /sys/class/gpio/gpio0/value
+
+	# Use IO9 as #SS
+	#	gpio4 = #SS (input)
+	#	gpio22=1 (IO9 is input
+	#	gpio23=1 (pull-up)
+	#	gpio70=0 (IO9 is GPIO)
+	if [ ! -d /sys/class/gpio/gpio70 ] ; then
+	    echo -n "70" > /sys/class/gpio/export
+	fi
+	echo -n "0" > /sys/class/gpio/gpio70/value
+
+	if [ ! -d /sys/class/gpio/gpio23 ] ; then
+	    echo -n "23" > /sys/class/gpio/export
+	fi
+	echo -n "out" > /sys/class/gpio/gpio23/direction
+	echo -n "1" > /sys/class/gpio/gpio23/value
+
+	if [ ! -d /sys/class/gpio/gpio22 ] ; then
+	    echo -n "22" > /sys/class/gpio/export
+	fi
+	echo -n "out" > /sys/class/gpio/gpio22/direction
+	echo -n "1" > /sys/class/gpio/gpio22/value
+	
+	if [ ! -d /sys/class/gpio/gpio4 ] ; then
+	    echo -n "4" > /sys/class/gpio/export
+	fi
+	echo -n "in" > /sys/class/gpio/gpio4/direction
+	
+	chgrp spi /sys/class/gpio/gpio4/value
+	chmod g+r /sys/class/gpio/gpio4/value
+    	;;
+    stop)
+    	echo -n "6" > /sys/class/gpio/unexport
+	
+    	echo -n "36" > /sys/class/gpio/unexport
+    	
+       	echo -n "1" > /sys/class/gpio/gpio37/value
+    	echo -n "in" > /sys/class/gpio/gpio37/direction
+    	echo -n "37" > /sys/class/gpio/unexport
+
+    	echo -n "0" > /sys/class/gpio/unexport
+	
+    	echo -n "18" > /sys/class/gpio/unexport
+
+    	echo -n "in" > /sys/class/gpio/gpio19/direction
+    	echo -n "19" > /sys/class/gpio/unexport
+
+    	echo -n "66" > /sys/class/gpio/unexport
+    	
+	echo -n "4" > /sys/class/gpio/unexport
+	
+	echo -n "22" > /sys/class/gpio/unexport
+	
+	echo -n "in" > /sys/class/gpio/gpio23/direction
+    	echo -n "23" > /sys/class/gpio/unexport
+	
+	echo -n "70" > /sys/class/gpio/unexport
+	;;
+    status)
+	;;
+    *)
+	echo -n "Usage: $0 " 
+	echo "{start|stop|restart|force-reload|status}"
+	exit 1
+	;;
+esac
+
+exit 0

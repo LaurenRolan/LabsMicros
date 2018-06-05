@@ -1,0 +1,71 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          eng10032lab09_1
+# Required-Start:    
+# Should-Start:      
+# Required-Stop:     
+# Default-Start:     S
+# Default-Stop:
+# Short-Description: Configures the Galileo shield pins for UART0 usage.
+# Description:       Configures the Galileo shield pins for UART0 usage.
+### END INIT INFO
+
+case "$1" in
+    start|restart|force-reload)
+	# IO0 is UART0 RX
+	#	gpio33= input (no pull-up neither pull-down)
+	#	gpio32= 1 (input)
+	# IO1 is UART0 TX
+	#	gpio45=1 (IO1 is UART0 TX)
+	#	gpio29=input (no pull-up neither pull-down)
+	#	gpio28=0 (output)    
+	if [ ! -d /sys/class/gpio/gpio33 ] ; then
+    		echo -n "33" > /sys/class/gpio/export
+	fi
+	echo "in" > /sys/class/gpio/gpio33/direction
+
+	if [ ! -d /sys/class/gpio/gpio32 ] ; then
+    		echo -n "32" > /sys/class/gpio/export
+	fi	        
+	echo "out" > /sys/class/gpio/gpio32/direction
+	echo "1" > /sys/class/gpio/gpio32/value
+
+	if [ ! -d /sys/class/gpio/gpio45 ] ; then
+    		echo -n "45" > /sys/class/gpio/export
+	fi	        
+	echo "out" > /sys/class/gpio/gpio45/direction
+	echo "1" > /sys/class/gpio/gpio45/value
+
+	if [ ! -d /sys/class/gpio/gpio29 ] ; then
+    		echo -n "29" > /sys/class/gpio/export
+	fi	
+	echo "in" > /sys/class/gpio/gpio29/direction
+
+	if [ ! -d /sys/class/gpio/gpio28 ] ; then
+    		echo -n "28" > /sys/class/gpio/export
+	fi
+	echo "out" > /sys/class/gpio/gpio28/direction 
+	echo "0" > /sys/class/gpio/gpio28/value 
+    	;;
+    stop)
+	echo "1" > /sys/class/gpio/gpio28/value
+	echo "28" > /sys/class/gpio/unexport
+
+	echo "29" > /sys/class/gpio/unexport
+
+	echo "45" > /sys/class/gpio/unexport
+
+	echo "32" > /sys/class/gpio/unexport	
+
+	echo "33" > /sys/class/gpio/unexport
+	;;
+    status)
+	;;
+    *)
+	echo -n "Usage: $0 " 
+	echo "{start|stop|restart|force-reload|status}"
+	exit 1
+	;;
+esac
+
+exit 0

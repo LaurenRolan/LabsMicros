@@ -1,0 +1,79 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          eng10032lab09_2
+# Required-Start:    
+# Should-Start:      
+# Required-Stop:     
+# Default-Start:     S
+# Default-Stop:
+# Short-Description: Configures the Galileo shield pins for UART1 usage.
+# Description:       Configures the Galileo shield pins for UART1 usage.
+### END INIT INFO
+
+case "$1" in
+    start|restart|force-reload)
+	# IO2 is UART1 RX
+	#	gpio77=1 (IO2 is  UART1 RX)
+	#	gpio35= input (no pull-up neither pull-down)
+	#	gpio34= 1 (input)
+	# IO3 is UART1 TX
+	#	gpio76=1 (IO1 is UART1 TX)
+	#	gpio17=input (no pull-up neither pull-down)
+	#	gpio16=0 (output)    
+
+	if [ ! -d /sys/class/gpio/gpio77 ] ; then
+    		echo -n "77" > /sys/class/gpio/export
+	fi
+	echo "1" > /sys/class/gpio/gpio77/value
+
+	if [ ! -d /sys/class/gpio/gpio35 ] ; then
+    		echo -n "35" > /sys/class/gpio/export
+	fi	   
+	echo "in" > /sys/class/gpio/gpio35/direction
+
+	if [ ! -d /sys/class/gpio/gpio34 ] ; then
+    		echo -n "34" > /sys/class/gpio/export
+	fi	        
+	echo "out" > /sys/class/gpio/gpio34/direction
+	echo "1" > /sys/class/gpio/gpio34/value
+
+	if [ ! -d /sys/class/gpio/gpio76 ] ; then
+    		echo -n "76" > /sys/class/gpio/export
+	fi	        
+	echo "1" > /sys/class/gpio/gpio76/value
+
+	if [ ! -d /sys/class/gpio/gpio17 ] ; then
+    		echo -n "17" > /sys/class/gpio/export
+	fi	
+	echo "in" > /sys/class/gpio/gpio17/direction
+
+	if [ ! -d /sys/class/gpio/gpio16 ] ; then
+    		echo -n "16" > /sys/class/gpio/export
+	fi
+	echo "out" > /sys/class/gpio/gpio16/direction
+	echo "0" > /sys/class/gpio/gpio16/value
+    	;;
+    stop)
+	echo "1" > /sys/class/gpio/gpio16/value
+	echo "16" > /sys/class/gpio/unexport
+
+	echo "17" > /sys/class/gpio/unexport
+	
+	echo "76" > /sys/class/gpio/unexport
+
+	echo "64" > /sys/class/gpio/unexport
+
+	echo "34" > /sys/class/gpio/unexport	
+
+	echo "35" > /sys/class/gpio/unexport
+	;;
+    status)
+	;;
+    *)
+	echo -n "Usage: $0 " 
+	echo "{start|stop|restart|force-reload|status}"
+	exit 1
+	;;
+esac
+
+exit 0

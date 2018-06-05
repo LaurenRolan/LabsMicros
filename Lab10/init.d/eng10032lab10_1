@@ -1,0 +1,29 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          eng10032lab010_1
+# Required-Start:    
+# Should-Start:      
+# Required-Stop:     
+# Default-Start:     S
+# Default-Stop:
+# Short-Description: Configures the Galileo eeprom.
+# Description:       Configures the Galileo eeprom.
+### END INIT INFO
+
+case "$1" in
+    start|restart|force-reload)
+	chgrp eeprom /sys/bus/i2c/devices/0-0054/eeprom
+	chmod g+rw /sys/bus/i2c/devices/0-0054/eeprom
+	;;
+    stop)
+	;;
+    status)
+	;;
+    *)
+	echo -n "Usage: $0 " 
+	echo "{start|stop|restart|force-reload|status}"
+	exit 1
+	;;
+esac
+
+exit 0
