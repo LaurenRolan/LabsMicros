@@ -1,0 +1,1 @@
+SUBSYSTEM=="eng10032", KERNEL=="led[0-3]", MODE="0620", GROUP="gpio"
