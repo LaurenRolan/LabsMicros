@@ -40,26 +40,27 @@ int main(int argc,char *argv[])
 		printf("\tUsage:\t%s <device>\n",argv[0]);
 		return -1;
 	}
+	//Abre o device
 	if((fd=open(argv[1],O_RDWR))==-1)
 	{
 		perror(argv[0]);
 		return -errno;
 	}
-	
+	//Pega a struct termio
 	if(tcgetattr(fd,&tty))
 	{
 		perror(argv[0]);
 		return -errno;
 	}	
-	
+	//Seta a mesma velocidade para transmissão e recepção
 	if(cfsetspeed(&tty,B9600))
 	{
 		perror(argv[0]);
 		return -errno;
 	}	        
-	
+	//Ajusta os campos do termio para o modo não canônico
 	cfmakeraw(&tty);
-	
+	//Seta para as alterações imediatas
         if (tcsetattr(fd,TCSANOW,&tty))
 	{
 		perror(argv[0]);
@@ -75,8 +76,8 @@ int main(int argc,char *argv[])
 			perror(argv[0]);
 			return -errno;
 		}
-	} while (c != 0x2b);
-
+	} while (c != 0x2b); //até que '+'
+	//Espera o fim da transmissão
 	if(tcdrain(fd))
 	{
 		perror(argv[0]);
