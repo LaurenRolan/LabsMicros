@@ -62,7 +62,7 @@ int main(int argc,char *argv[])
         struct tm lt;
         char timestr[33];
         struct sigaction act;
-        
+        //Acesso fácil á interface I2C
         if((fd=open("/dev/i2c-0",O_WRONLY)) < 0) i2c_error("Opening /dev/i2c-0");
         usleep(30000);	/* Wait for 30 ms after power on */
         
@@ -88,7 +88,7 @@ int main(int argc,char *argv[])
                 BL_BLUE_GRPPWM);
         i2c_write_reg(fd,BL_MODE2,BL_DMBLNK);
         
-        i2c_write_reg(fd,BL_RED,255);
+        i2c_write_reg(fd,BL_RED,255);	//Escala RGB
         i2c_write_reg(fd,BL_GREEN,0);
         i2c_write_reg(fd,BL_BLUE,0);
 
@@ -111,7 +111,9 @@ int main(int argc,char *argv[])
                 i2c_write_reg(fd,LCD_C0,LCD_DDRAMADDRSET | 0x40);
                 n=strftime(timestr,sizeof timestr,"%T %Z",&lt);
                 for(i=0;i < n;i++) i2c_write_reg(fd,LCD_RS,timestr[i]);
-        
+		
+        	//ioctl serve para executar comandos diferentes de read/write no barramento
+		//Neste caso, define o endereço do escravo (BL_ADDR)
                 if(ioctl(fd,I2C_SLAVE,BL_ADDR) < 0) i2c_error("ioctl on /dev/i2c-0");
                 i2c_write_reg(fd,BL_RED,rand());
                 i2c_write_reg(fd,BL_GREEN,rand());
