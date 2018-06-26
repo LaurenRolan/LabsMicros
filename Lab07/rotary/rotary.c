@@ -36,18 +36,19 @@ int main(int argc,char * argv[])
         char data_str[80];
         double scale;
         int raw;
-
+        //Lê o canal 0
         if((fd=open("/sys/bus/iio/devices/iio:device0/in_voltage0_raw",O_RDONLY)) < 0)
         {
                 perror("Opening in_voltage0raw:");
                 return -1;
         }
-        
+        //Pega a escala e adapta (está em  milivolts)
         pgets(data_str,sizeof data_str,"/sys/bus/iio/devices/iio:device0/in_voltage0_scale");
         scale=atof(data_str)/1000.0;
         
         for(;;)
         {
+                //Lê dados, converte pra int e printa na tela
                 lseek(fd,0,SEEK_SET);
                 read(fd,data_str,sizeof data_str);
                 raw=atoi(data_str);
