@@ -42,14 +42,21 @@ int main(int argc,char * argv[])
                 perror("Opening duty_cycle:");
                 return -1;
         }
+        //Seta duty cycle pra zero
         write(fd,"0\n",2);
         
+        //Dá enable
         pputs("/sys/class/pwm/pwmchip0/pwm1/enable","1");
 
+        //1.000.000 nanossegundos = 1 milissegundo
+        //100.000 nanossegundos = 0,1 milissegundo
         for(i=0;i < 1000000;i+=100000)
         {
+                //A cada 0,1 milis
                 lseek(fd,0,SEEK_SET);
+                //Escreve i no formato integer no buffer str
                 snprintf(str,sizeof str,"%d\n",i);
+                //Escreve o buffer no arquivo do duuty-cycle
                 write(fd,str,strlen(str));
 
                 printf("%d\n",i);
@@ -57,7 +64,7 @@ int main(int argc,char * argv[])
         }
         
         close(fd);
-
+        //Desabilita o pwm
         pputs("/sys/class/pwm/pwmchip0/pwm1/enable","0");        
        
         return 0;
