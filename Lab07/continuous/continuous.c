@@ -65,40 +65,51 @@ int main(int argc,char * argv[])
         }
 
         pputs("/sys/bus/iio/devices/iio:device0/buffer/enable","0");
+        //Itera sobre os 4 canais 
         for(i=0;i < 4;i++)
         {
+                //Manha pra pegar o path diferente a cada iteração
                 snprintf(path_str,sizeof path_str,"/sys/bus/iio/devices/iio:device0/in_voltage%d_scale",i);
+                //Pega os dados do path atual
                 pgets(data_str,sizeof data_str,path_str);
+                //A escala do canal i passa a ser a que está no /in_voltage<n>_scale
+                //Divide por 1000 porque está em milissegundos
                 scale[i]=atof(data_str)/1000.0;
                 
+                //Dá o enable pra cada canal
                 snprintf(path_str,sizeof path_str,"/sys/bus/iio/devices/iio:device0/scan_elements/in_voltage%d_en",i);
                 pputs(path_str,"1");
         }
+        //Dá enable pro modo contínuo
         pputs("/sys/bus/iio/devices/iio:device0/scan_elements/in_timestamp_en","1");
-
+        //Indica que vai coletar 1000 amostras por buffer (DATA_POINTS = 1000)
         snprintf(data_str,sizeof data_str,"%d",DATA_POINTS);
         pputs("/sys/bus/iio/devices/iio:device0/buffer/length",data_str);
         
-#ifdef TRIG_SYSFS
+#ifdef TRIG_SYSFS //Usado em testes automatizados
+        //Se o TRIG_SYSFS já estiver setado, só indica o trigger atual
         pgets(data_str,sizeof data_str,"/sys/bus/iio/devices/trigger0/name");
         pputs("/sys/bus/iio/devices/iio:device0/trigger/current_trigger",data_str);
 #else
         pgets(data_str,sizeof data_str,"/sys/bus/iio/devices/trigger1/name");
         pputs("/sys/bus/iio/devices/iio:device0/trigger/current_trigger",data_str);
-
+        //Frequência de trigger é o inverso do 1ms programado
         snprintf(data_str,sizeof data_str,"%d",(int)round(1.0/SAMPLING_PERIOD));
         pputs("/sys/bus/iio/devices/trigger1/frequency",data_str);
 #endif        
-
+        //Dá enable no buffer
         pputs("/sys/bus/iio/devices/iio:device0/buffer/enable","1");
 
 #ifdef TRIG_SYSFS
-        for(i=0; i < DATA_POINTS;i++)
+        for(i=0; i < DATA_POINTS;i++) //Para cada amostra
         {
+                //Ativa um trigger
                 pputs("/sys/bus/iio/devices/trigger0/trigger_now","1");
+                //Fica off por 1s
                 usleep(ceil(SAMPLING_PERIOD*1e6));
         }
 #else
+        //Fica off por 1 segundo
         sleep(ceil(DATA_POINTS*SAMPLING_PERIOD));
 #endif
         
@@ -111,17 +122,20 @@ int main(int argc,char * argv[])
                 perror("Opening /dev/iio:device0:");
                 return -1;
         }
-        
+        //Lê as amostras do sensores
         samples=read(fd,data,sizeof data)/sizeof(struct sensors);
         close(fd);
         
+        //Reseta o buffer
         pputs("/sys/bus/iio/devices/iio:device0/buffer/length","2");
         
         for(i=0;i < 4;i++)
         {
+                //Desabilita todos os canais
                 snprintf(path_str,sizeof path_str,"/sys/bus/iio/devices/iio:device0/scan_elements/in_voltage%d_en",i);
                 pputs(path_str,"0");
         }
+        //Reseta a timestamp
         pputs("/sys/bus/iio/devices/iio:device0/scan_elements/in_timestamp_en","0");
         
         if((file=fopen(argv[1],"w")) == NULL)
@@ -129,7 +143,7 @@ int main(int argc,char * argv[])
                 perror("Opening output file:");
                 return -1;
         }
-
+        //Escreve todas as amostras num formato 'lível' pelo GNUPlot
         for(i=0;i < samples;i++)
         {
                 data[i].pot=bswap_16(data[i].pot);
