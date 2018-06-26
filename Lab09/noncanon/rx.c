@@ -42,26 +42,27 @@ int main(int argc,char *argv[])
 		printf("\tUsage:\t%s <device>\n",argv[0]);
 		return -1;
 	}
+	//Abre o /dev/ttySx
 	if((fd=open(argv[1],O_RDWR))==-1)
 	{
 		perror(argv[0]);
 		return -errno;
 	}
-	
+	//Pega a struct termio
 	if(tcgetattr(fd,&tty))
 	{
 		perror(argv[0]);
 		return -errno;
 	}	
-	
+	//Seta a mesma velocidade para ambos
 	if(cfsetspeed(&tty,B9600))
 	{
 		perror(argv[0]);
 		return -errno;
 	}	        
-
+	//Ajusta o termio para a estrutura não-canônica
 	cfmakeraw(&tty);
-	
+	//Seta para que as alterações ocorram imediatamente
         if(tcsetattr(fd,TCSANOW,&tty))
 	{
 		perror(argv[0]);
@@ -69,14 +70,14 @@ int main(int argc,char *argv[])
 	}
 	for(;;)
 	{
-	
+		//Lê o buffer
 		if((n=read(fd,s,255))==-1)
 		{
 			perror(argv[0]);
 			return -errno;
 		}
 		s[n]='\0';
-	
+		//Printa a string do buffer
 		printf("%s",s);
 		fflush(stdout);
 	}
