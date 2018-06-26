@@ -37,27 +37,28 @@ int main(int argc,char *argv[])
 	if(argc != 2)
 	{
 		printf("Canonical mode transmission\n");
-		printf("\tUsage:\t%s <device>\n",argv[0]);
+		printf("\tUsage:\t%s <device>\n",argv[0]); //device é /dev/ttyS0
 		return -1;
 	}
+	//Abre o device
 	if((fd=open(argv[1],O_RDWR))==-1)
 	{
 		perror(argv[0]);
 		return -errno;
 	}
-	
+	//Pega a struct termio
 	if(tcgetattr(fd,&tty))
 	{
 		perror(argv[0]);
 		return -errno;
 	}	
-	
+	//Seta ambas velocidades para o mesmo valor
 	if(cfsetspeed(&tty,B9600))
 	{
 		perror(argv[0]);
 		return -errno;
 	}	        
-
+	//Seta para que as alterações ocorram imediatamente (TCSANOW)
         if(tcsetattr(fd,TCSANOW,&tty))
 	{
 		perror(argv[0]);
@@ -66,14 +67,16 @@ int main(int argc,char *argv[])
 	do
 	{
 		c=getchar();
-
+		//^^^Lê input
+		//vvvEscreve no device
 		if(write(fd,&c,1)==-1)
 		{
 			perror(argv[0]);
 			return -errno;
 		}
-	} while (c != 0x2b);
+	} while (c != 0x2b); //enquanto não for '+'
 
+	//waits until all output written to the object referred to by fd has been transmitted.
 	if(tcdrain(fd))
 	{
 		perror(argv[0]);
