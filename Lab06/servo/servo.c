@@ -40,18 +40,20 @@ int main(int argc,char * argv[])
                 puts("Usage: servo <angle in degrees>");
                 return -1;
         }
-        
+        //Converte para radianos
         angle=atof(argv[1]) * M_PI/180.0;
-        
+        //Só aceita entre 180°/-180°
         if((angle > M_PI_2) || (angle < - M_PI_2))
         {
                 puts("Out of range.");
                 return -2;
         }
+        //850.000 = usado para converter em frequência
+        //1.500.000ns = 1.500 us = frequência do sentido anti-horário
         duty_cycle=angle/M_PI_2*850000+1500000;
-                
+        //Período de 20.000.000ns == 20ms
         pputs("/sys/class/pwm/pwmchip0/device/pwm_period","20000000");
-        
+        //Formata o duty cylce
         snprintf(str,sizeof str,"%d\n",duty_cycle);
         pputs("/sys/class/pwm/pwmchip0/pwm1/duty_cycle",str);
         pputs("/sys/class/pwm/pwmchip0/pwm1/enable","1");
