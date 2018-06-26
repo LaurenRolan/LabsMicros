@@ -35,6 +35,9 @@ int main(int argc,char *argv[])
 	char s[256];
 	int n;
 	struct termios tty;
+	/*
+	Struct que contém flags de in, out, controle, local e caracteres de controle
+	*/
 	
 	if(argc != 2)
 	{
@@ -42,24 +45,26 @@ int main(int argc,char *argv[])
 		printf("\tUsage:\t%s <device>\n",argv[0]);
 		return -1;
 	}
+	
+	//Abre device, do tipo /dev/ttyS0
 	if((fd=open(argv[1],O_RDWR))==-1)
 	{
 		perror(argv[0]);
 		return -errno;
 	}
-	
+	//Pega os atributos da struct termios
 	if(tcgetattr(fd,&tty))
 	{
 		perror(argv[0]);
 		return -errno;
 	}	
-	
+	//Seta a velocidade de transmissão e recepção para o mesmo valor
 	if(cfsetspeed(&tty,B9600))
 	{
 		perror(argv[0]);
 		return -errno;
 	}	        
-
+	//Ajuste para o modo canônico
 	tty.c_lflag &=~ECHO;
 	
         if(tcsetattr(fd,TCSANOW,&tty))
@@ -69,14 +74,14 @@ int main(int argc,char *argv[])
 	}
 	for(;;)
 	{
-	
+		//Lê o device
 		if((n=read(fd,s,255))==-1)
 		{
 			perror(argv[0]);
 			return -errno;
 		}
 		s[n]='\0';
-	
+		//Printa a string recebida
 		printf("%s",s);
 		fflush(stdout);
 	}
