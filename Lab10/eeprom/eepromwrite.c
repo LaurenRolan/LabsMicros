@@ -36,7 +36,7 @@ int main(int argc,char *argv[])
 		printf("\tUsage:\t%s <string>\n",argv[0]);
 		return -1;
 	}
-	
+	//Escreve o primeiro parâmetro na eeprom
 	if(pputs("/sys/bus/i2c/devices/0-0054/eeprom",argv[1]) < 0)
 	{
 		perror(argv[0]);
