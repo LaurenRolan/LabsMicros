@@ -37,7 +37,7 @@ int main(int argc,char *argv[])
 		perror(argv[0]);
 		return errno;
 	}
-	//Escreve a mesma coisa nela
+	//Escreve a mesma coisa na tela
         if(write(STDOUT_FILENO,s,sizeof s) < 0)
         {
 		perror(argv[0]);
